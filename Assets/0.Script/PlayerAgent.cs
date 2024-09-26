@@ -23,9 +23,9 @@ public class PlayerAgent : Agent
     private float insideTimer = 0; //현재 미사용
     public Player player;
     private Vector3 referencePosition;   // 기준 위치
-    private float netDistanceThreshold = 3f; // 순이동 거리 기준값
-    private float movementTimer = 0f;
-    private float movementTimeLimit = 3f; // 시간 제한 (초)
+    //private float netDistanceThreshold = 10f; // 순이동 거리 기준값
+    //private float movementTimer = 0f;
+    //private float movementTimeLimit = 3f; // 시간 제한 (초)
 
     public override void OnEpisodeBegin()
     {
@@ -78,7 +78,7 @@ public class PlayerAgent : Agent
 
         float netDistance = Vector3.Distance(transform.position, referencePosition);
 
-        if (netDistance >= netDistanceThreshold) // 보상 지급 및 기준 위치와 타이머 재설정
+        /*if (netDistance >= netDistanceThreshold) // 보상 지급 및 기준 위치와 타이머 재설정
         {
             
             AddReward(0.1f);
@@ -91,7 +91,7 @@ public class PlayerAgent : Agent
             AddReward(-0.2f);
             Debug.Log("이동 시간 초과 패널티 부여");
             movementTimer = 0f;
-        }
+        }*/
 
         if (bullettimer > 2.0f)
         {

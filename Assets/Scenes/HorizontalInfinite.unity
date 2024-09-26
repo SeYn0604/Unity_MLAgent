@@ -19590,13 +19590,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 192086321}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 175651069}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1156736078}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &192086324
 MonoBehaviour:
@@ -31369,13 +31369,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873388610}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 955015741}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1156736078}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &873388614
 AudioSource:
@@ -31558,7 +31558,7 @@ GameObject:
   - component: {fileID: 888329636}
   - component: {fileID: 888329635}
   - component: {fileID: 888329634}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (2)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -31612,7 +31612,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -31623,7 +31623,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 10}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &888329635
 Rigidbody2D:
@@ -41558,7 +41558,7 @@ GameObject:
   - component: {fileID: 1059159837}
   - component: {fileID: 1059159836}
   - component: {fileID: 1059159835}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -41612,7 +41612,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -41623,7 +41623,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 10}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &1059159836
 Rigidbody2D:
@@ -41981,7 +41981,7 @@ GameObject:
   - component: {fileID: 1109302686}
   - component: {fileID: 1109302685}
   - component: {fileID: 1109302684}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -42035,7 +42035,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -42046,7 +42046,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 10}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &1109302685
 Rigidbody2D:
@@ -42437,7 +42437,7 @@ MonoBehaviour:
   m_RaysPerDirection: 50
   m_MaxRayDegrees: 180
   m_SphereCastRadius: 0.1
-  m_RayLength: 10
+  m_RayLength: 9
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 192
@@ -42645,6 +42645,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 257067724}
+  - {fileID: 192086323}
+  - {fileID: 873388613}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1293513796
@@ -44190,7 +44192,7 @@ GameObject:
   - component: {fileID: 1744392063}
   - component: {fileID: 1744392062}
   - component: {fileID: 1744392061}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (3)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -44244,7 +44246,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -44255,7 +44257,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 10}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &1744392062
 Rigidbody2D:
@@ -45526,8 +45528,6 @@ RectTransform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 192086323}
-  - {fileID: 873388613}
   - {fileID: 644263168}
   - {fileID: 1813753698}
   - {fileID: 1156736078}
