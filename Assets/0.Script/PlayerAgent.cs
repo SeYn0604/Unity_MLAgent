@@ -20,12 +20,18 @@ public class PlayerAgent : Agent
     public int hitcheck = 0;
     public int wallcheck = 0;
     private float bullettimer = 0;
-    private float insideTimer = 0; //현재 미사용
+    private float insideTimer = 0;                   //현재 미사용
     public Player player;
-    private Vector3 referencePosition;   // 기준 위치
-    //private float netDistanceThreshold = 10f; // 순이동 거리 기준값
+    private Vector3 referencePosition;               // 기준 위치
+    //private float netDistanceThreshold = 10f;     // 순이동 거리 기준값
     //private float movementTimer = 0f;
-    //private float movementTimeLimit = 3f; // 시간 제한 (초)
+    //private float movementTimeLimit = 3f;         // 시간 제한 (초)
+    // 탄약 관련 변수 
+    public int maxAmmo = 10;                       
+    public int currentAmmo; 
+    public bool isReloading = false;
+    public float reloadTime = 2f;                   // 재장전 시간
+    private float reloadTimer = 0f;
 
     public override void OnEpisodeBegin()
     {
@@ -34,10 +40,25 @@ public class PlayerAgent : Agent
         wallcheck = 0;
         player.HP = 100;
         referencePosition = transform.position;
+        currentAmmo = maxAmmo;
+        isReloading = false;
+        reloadTimer = 0f;
         //target.position = new Vector2(UnityEngine.Random.Range(-15, 15), UnityEngine.Random.Range(-15, 15));
     }
     private void Update()
     {
+        if (isReloading)
+        {
+            reloadTimer += Time.deltaTime;
+            if (reloadTimer >= reloadTime)
+            {
+                currentAmmo = maxAmmo;
+                isReloading = false;
+                reloadTimer = 0f;
+                Debug.Log("재장전 완료");
+            }
+        }
+
         bullettimer += Time.deltaTime;
         insideTimer += Time.deltaTime;
 
@@ -66,6 +87,7 @@ public class PlayerAgent : Agent
     {
         sensor.AddObservation(transform.position);
         sensor.AddObservation(target.position);
+        sensor.AddObservation(isReloading ? 1f : 0f);
     }
 
     [SerializeField] float speed = 1.2f;
@@ -92,8 +114,7 @@ public class PlayerAgent : Agent
             Debug.Log("이동 시간 초과 패널티 부여");
             movementTimer = 0f;
         }*/
-
-        if (bullettimer > 2.0f)
+        /*if (bullettimer > 1.0f)
         {
             GameObject detectedMonster = RayCastInfo(m_rayPerceptionSensorComponent2D);
             if (detectedMonster != null && detectedMonster.CompareTag("Monster"))
@@ -101,6 +122,27 @@ public class PlayerAgent : Agent
                 Vector2 targetDirection = detectedMonster.transform.position - transform.position;
                 CreateBullet(targetDirection.normalized);
                 bullettimer = 0;
+            }
+        }*/ //예전에 사용된 총알 발사 구현부
+        if (bullettimer > 1.0f && !isReloading)
+        {
+            GameObject detectedMonster = RayCastInfo(m_rayPerceptionSensorComponent2D);
+            if (detectedMonster != null && detectedMonster.CompareTag("Monster"))
+            {
+                if (currentAmmo > 0)
+                {
+                    Vector2 targetDirection = detectedMonster.transform.position - transform.position;
+                    CreateBullet(targetDirection.normalized);
+                    currentAmmo--;
+                    bullettimer = 0f;
+
+                    // 탄약을 모두 소모하면 자동으로 재장전 시작
+                    if (currentAmmo <= 0)
+                    {
+                        isReloading = true;
+                        Debug.Log("탄약 소진, 재장전 시작");
+                    }
+                }
             }
         }
     }
