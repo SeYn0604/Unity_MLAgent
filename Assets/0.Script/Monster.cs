@@ -108,7 +108,7 @@ public class Monster : MonoBehaviour
     }
     IEnumerator CDropExp()
     {
-        UI.instance.KillCount++;
+        
         Instantiate(expPrefab, transform.position, Quaternion.identity);
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);

@@ -22,12 +22,18 @@ public class PlayerAgent : Agent
     private float bullettimer = 0;
     private float insideTimer = 0; //현재 미사용
     public Player player;
+    private Vector3 referencePosition;   // 기준 위치
+    private float netDistanceThreshold = 3f; // 순이동 거리 기준값
+    private float movementTimer = 0f;
+    private float movementTimeLimit = 3f; // 시간 제한 (초)
+
     public override void OnEpisodeBegin()
     {
         transform.position = Vector3.zero;
         hitcheck = 0;
         wallcheck = 0;
         player.HP = 100;
+        referencePosition = transform.position;
         //target.position = new Vector2(UnityEngine.Random.Range(-15, 15), UnityEngine.Random.Range(-15, 15));
     }
     private void Update()
@@ -37,6 +43,7 @@ public class PlayerAgent : Agent
 
         if(hitcheck == 1) //bullet 스크립트에서 hitcheck 부여
         {
+            UI.instance.KillCount++;
             AddReward(+10.0f);
             hitcheck = 0;
             Debug.Log("몬스터맞춤");
@@ -68,6 +75,23 @@ public class PlayerAgent : Agent
         nextMove.x = actions.ContinuousActions[0]*3;
         nextMove.y = actions.ContinuousActions[1]*3;
         transform.Translate(nextMove * Time.deltaTime * speed);
+
+        float netDistance = Vector3.Distance(transform.position, referencePosition);
+
+        if (netDistance >= netDistanceThreshold) // 보상 지급 및 기준 위치와 타이머 재설정
+        {
+            
+            AddReward(0.1f);
+            Debug.Log("이동 거리 보상 지급");
+            referencePosition = transform.position;
+            movementTimer = 0f;
+        }
+        else if (movementTimer >= movementTimeLimit) // 시간 내에 이동하지 못하면 패널티 부여
+        {
+            AddReward(-0.2f);
+            Debug.Log("이동 시간 초과 패널티 부여");
+            movementTimer = 0f;
+        }
 
         if (bullettimer > 2.0f)
         {
@@ -109,6 +133,7 @@ public class PlayerAgent : Agent
             if(player.HP <= 0f)
             {
                 EndEpisode();
+                UI.instance.KillCount = 0;
                 Debug.Log("초기화");
                 Destroymonsters(); //에이전트가 사망하므로 에피소드 초기화 및 모든 몬스터 제거
             }
@@ -118,6 +143,7 @@ public class PlayerAgent : Agent
             Debug.Log("impact wall");
             AddReward(-5.0f);
             EndEpisode();
+            UI.instance.KillCount = 0;
             Debug.Log("벽에부딫혀초기화");
             Destroymonsters(); //벽의 경우, 바로 초기화 안할 시 에이전트가 뚫고 지나갈 가능성이 있으므로 닿을 시 무조건 초기화 유지
         }
