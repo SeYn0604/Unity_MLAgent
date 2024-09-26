@@ -20130,7 +20130,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Lv.0
+  m_Text: '**Total Steps**'
 --- !u!222 &509866209
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -31157,6 +31157,11 @@ MonoBehaviour:
   hitcheck: 0
   wallcheck: 0
   player: {fileID: 1853127463}
+  maxAmmo: 10
+  currentAmmo: 0
+  isReloading: 0
+  reloadTime: 3
+  stepCounterText: {fileID: 509866208}
   speed: 1.2
 --- !u!114 &1156736075
 MonoBehaviour:
@@ -31171,7 +31176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 6
+    VectorObservationSize: 13
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 3

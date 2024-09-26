@@ -9,6 +9,7 @@ using System.Threading;
 using UnityEngine.UIElements;
 using System.Runtime.CompilerServices;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class PlayerAgent : Agent
 {
@@ -30,8 +31,9 @@ public class PlayerAgent : Agent
     public int maxAmmo = 10;                       
     public int currentAmmo; 
     public bool isReloading = false;
-    public float reloadTime = 2f;                   // 재장전 시간
+    public float reloadTime = 3f;                   // 재장전 시간
     private float reloadTimer = 0f;
+    public Text stepCounterText;                // 스텝 수를 표시할 Text 컴포넌트
 
     public override void OnEpisodeBegin()
     {
@@ -55,7 +57,6 @@ public class PlayerAgent : Agent
                 currentAmmo = maxAmmo;
                 isReloading = false;
                 reloadTimer = 0f;
-                Debug.Log("재장전 완료");
             }
         }
 
@@ -67,13 +68,13 @@ public class PlayerAgent : Agent
             UI.instance.KillCount++;
             AddReward(+10.0f);
             hitcheck = 0;
-            Debug.Log("몬스터맞춤");
+            Debug.Log("몬스터 처치 - 가점 부여");
         }
         if(wallcheck == 1)
         {
             AddReward(-1f);
             wallcheck = 0;
-            Debug.Log("벽맞춤");
+            Debug.Log("벽 맞춤 - 감점 부여");
         }
         /*if (insideTimer >= 5)
         {
@@ -85,45 +86,94 @@ public class PlayerAgent : Agent
     
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.position);
-        sensor.AddObservation(target.position);
-        sensor.AddObservation(isReloading ? 1f : 0f);
+        sensor.AddObservation(transform.position / 10f); // 에이전트 위치 (3)
+        sensor.AddObservation(target.position / 10f);    // 타겟 위치 (3)
+        sensor.AddObservation(rb.velocity / 5f);         // 에이전트 속도 (2)
+        sensor.AddObservation(player.HP / 100f);         // 에이전트 체력 (1)
+        sensor.AddObservation(bullettimer / 2f);         // 총알 타이머 (1)
+        sensor.AddObservation(wallcheck);                // 벽 충돌 여부 (1)
+        sensor.AddObservation(isReloading ? 1f : 0f);    // 재장전 중인지 여부 (1)
+        sensor.AddObservation(currentAmmo / (float)maxAmmo); // 남은 탄약 비율 (1)
+      // 총 관찰 값: 3 + 3 + 2 + 1 + 1 + 1 + 1 + 1 = 13
     }
-
     [SerializeField] float speed = 1.2f;
     Vector3 nextMove;
+    private bool IsMonsterNearby()
+    {
+        float detectionRadius = 5.0f; // 몬스터 감지 반경
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Monster"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private void OnDrawGizmosSelected()
+    {
+        // 감지 반경을 빨간색으로 표시
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 5.0f); // 5.0f는 detectionRadius 값
+    }
     public override void OnActionReceived(ActionBuffers actions)
     {
-        nextMove.x = actions.ContinuousActions[0]*3;
-        nextMove.y = actions.ContinuousActions[1]*3;
+        // 글로벌 스텝 수 가져오기
+        int globalStepCount = (int)Academy.Instance.StepCount;
+
+        // UI 업데이트
+        if (stepCounterText != null)
+        {
+            stepCounterText.text = "Step: " + globalStepCount.ToString();
+        }
+        // 이동 코드
+        nextMove.x = actions.ContinuousActions[0] * 3;
+        nextMove.y = actions.ContinuousActions[1] * 3;
         transform.Translate(nextMove * Time.deltaTime * speed);
 
-        float netDistance = Vector3.Distance(transform.position, referencePosition);
+        // 재장전 액션 처리
+        float reloadAction = actions.ContinuousActions[2];
+        if (reloadAction > 0.5f && !isReloading && currentAmmo < maxAmmo)
+        {
+            isReloading = true;
+            reloadTimer = 0f;
 
-        /*if (netDistance >= netDistanceThreshold) // 보상 지급 및 기준 위치와 타이머 재설정
-        {
-            
-            AddReward(0.1f);
-            Debug.Log("이동 거리 보상 지급");
-            referencePosition = transform.position;
-            movementTimer = 0f;
-        }
-        else if (movementTimer >= movementTimeLimit) // 시간 내에 이동하지 못하면 패널티 부여
-        {
-            AddReward(-0.2f);
-            Debug.Log("이동 시간 초과 패널티 부여");
-            movementTimer = 0f;
-        }*/
-        /*if (bullettimer > 1.0f)
-        {
-            GameObject detectedMonster = RayCastInfo(m_rayPerceptionSensorComponent2D);
-            if (detectedMonster != null && detectedMonster.CompareTag("Monster"))
+            if (currentAmmo <= 2) // 탄약이 2발 이하일 때만 보상 조건
             {
-                Vector2 targetDirection = detectedMonster.transform.position - transform.position;
-                CreateBullet(targetDirection.normalized);
-                bullettimer = 0;
+                if (!IsMonsterNearby())
+                {
+                    AddReward(0.2f); // 안전한 재장전 보상
+                    Debug.Log("안전한 재장전 - 가점 부여");
+                }
+                else
+                {
+                    AddReward(-0.5f); // 위험한 재장전 패널티
+                    Debug.Log("위험한 재장전 - 감점 부여");
+                }
             }
-        }*/ //예전에 사용된 총알 발사 구현부
+            else
+            {
+                // 탄약이 충분한데 재장전하면 패널티 부여
+                AddReward(-0.3f);
+                Debug.Log("불필요한 재장전 - 감점 부여");
+            }
+        }
+
+        // 재장전 로직
+        if (isReloading)
+        {
+            reloadTimer += Time.deltaTime;
+            if (reloadTimer >= reloadTime)
+            {
+                currentAmmo = maxAmmo;
+                isReloading = false;
+                reloadTimer = 0f;
+                Debug.Log("일반 재장전 완료");
+            }
+        }
+
+        // 사격 로직
         if (bullettimer > 1.0f && !isReloading)
         {
             GameObject detectedMonster = RayCastInfo(m_rayPerceptionSensorComponent2D);
@@ -135,13 +185,13 @@ public class PlayerAgent : Agent
                     CreateBullet(targetDirection.normalized);
                     currentAmmo--;
                     bullettimer = 0f;
-
-                    // 탄약을 모두 소모하면 자동으로 재장전 시작
-                    if (currentAmmo <= 0)
-                    {
-                        isReloading = true;
-                        Debug.Log("탄약 소진, 재장전 시작");
-                    }
+                }
+                else
+                {
+                    // 탄약이 없을 때 자동으로 재장전 시작
+                    isReloading = true;
+                    reloadTimer = 0f;
+                    Debug.Log("탄약 소진, 자동 재장전 시작");
                 }
             }
         }
@@ -168,7 +218,7 @@ public class PlayerAgent : Agent
     {
         if (other.gameObject.CompareTag("Monster")) 
         {
-            Debug.Log("impact monster");
+            Debug.Log("몬스터와 충돌 - 감점 부여");
             player.Hit(110);           //agent가 닿아도 감점만 되니 적극적인 회피를 하지않으므로 기존과 같이 몬스터와 닿을시 즉사판정으로 변경
             AddReward(-1.0f);
             Destroy(other.gameObject); 
@@ -176,17 +226,17 @@ public class PlayerAgent : Agent
             {
                 EndEpisode();
                 UI.instance.KillCount = 0;
-                Debug.Log("초기화");
+                Debug.Log("에이전트 사망, EndEpisode");
                 Destroymonsters(); //에이전트가 사망하므로 에피소드 초기화 및 모든 몬스터 제거
             }
         }
         else if(other.gameObject.CompareTag("Wall"))
         {
-            Debug.Log("impact wall");
+            Debug.Log("벽과 충돌 - 감점 부여");
             AddReward(-5.0f);
             EndEpisode();
             UI.instance.KillCount = 0;
-            Debug.Log("벽에부딫혀초기화");
+            Debug.Log("벽에 부딫힘, EndEpisode");
             Destroymonsters(); //벽의 경우, 바로 초기화 안할 시 에이전트가 뚫고 지나갈 가능성이 있으므로 닿을 시 무조건 초기화 유지
         }
     }

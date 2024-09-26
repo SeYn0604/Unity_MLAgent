@@ -11,8 +11,8 @@ public class MidBossDash : MonoBehaviour
     public bool makeGhost;
     private Rigidbody2D rBody2d;
     private float dashDistance = 5f;
-    private float dashCooldown = 5f;
-    private float lastDashTime;
+    //private float dashCooldown = 5f;
+    //private float lastDashTime;
 
     void Start()
     {
