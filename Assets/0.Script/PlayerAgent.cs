@@ -34,6 +34,9 @@ public class PlayerAgent : Agent
     public float reloadTime = 3f;                   // 재장전 시간
     private float reloadTimer = 0f;
     public Text stepCounterText;                // 스텝 수를 표시할 Text 컴포넌트
+    public Vector2 movementDirection { get; private set; } // 에이전트의 이동 방향
+    private Vector2 previousPosition;
+
 
     public override void OnEpisodeBegin()
     {
@@ -45,6 +48,7 @@ public class PlayerAgent : Agent
         currentAmmo = maxAmmo;
         isReloading = false;
         reloadTimer = 0f;
+        previousPosition = transform.position;
         //target.position = new Vector2(UnityEngine.Random.Range(-15, 15), UnityEngine.Random.Range(-15, 15));
     }
     private void Update()
@@ -96,7 +100,7 @@ public class PlayerAgent : Agent
         sensor.AddObservation(currentAmmo / (float)maxAmmo); // 남은 탄약 비율 (1)
       // 총 관찰 값: 3 + 3 + 2 + 1 + 1 + 1 + 1 + 1 = 13
     }
-    [SerializeField] float speed = 1.2f;
+    [SerializeField] float speed = 1.1f;
     Vector3 nextMove;
     private bool IsMonsterNearby()
     {
@@ -131,6 +135,10 @@ public class PlayerAgent : Agent
         nextMove.x = actions.ContinuousActions[0] * 3;
         nextMove.y = actions.ContinuousActions[1] * 3;
         transform.Translate(nextMove * Time.deltaTime * speed);
+        // 이동 방향 계산
+        Vector2 currentPosition = transform.position;
+        movementDirection = (currentPosition - previousPosition).normalized;
+        previousPosition = currentPosition;
 
         // 재장전 액션 처리
         float reloadAction = actions.ContinuousActions[2];
