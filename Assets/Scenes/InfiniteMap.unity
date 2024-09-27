@@ -31160,9 +31160,9 @@ MonoBehaviour:
   maxAmmo: 10
   currentAmmo: 0
   isReloading: 0
-  reloadTime: 3
+  reloadTime: 2
   stepCounterText: {fileID: 509866208}
-  speed: 1.1
+  speed: 1.2
 --- !u!114 &1156736075
 MonoBehaviour:
   m_ObjectHideFlags: 0
