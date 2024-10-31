@@ -31,7 +31,7 @@ public class PlayerAgent : Agent
     public int maxAmmo = 10;                       
     public int currentAmmo; 
     public bool isReloading = false;
-    public float reloadTime = 3f;                   // 재장전 시간
+    public float reloadTime = 1.5f;                   // 재장전 시간
     private float reloadTimer = 0f;
     public Text stepCounterText;                // 스텝 수를 표시할 Text 컴포넌트
     public Vector2 movementDirection { get; private set; } // 에이전트의 이동 방향
@@ -115,12 +115,12 @@ public class PlayerAgent : Agent
         }
         return false;
     }
-    private void OnDrawGizmosSelected()
+    /*private void OnDrawGizmosSelected()
     {
         // 감지 반경을 빨간색으로 표시
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 5.0f); // 5.0f는 detectionRadius 값
-    }
+    }*/
     public override void OnActionReceived(ActionBuffers actions)
     {
         // 글로벌 스텝 수 가져오기
@@ -140,7 +140,7 @@ public class PlayerAgent : Agent
         movementDirection = (currentPosition - previousPosition).normalized;
         previousPosition = currentPosition;
 
-        // 재장전 액션 처리
+        /*/ 재장전 액션 처리
         float reloadAction = actions.ContinuousActions[2];
         if (reloadAction > 0.5f && !isReloading && currentAmmo < maxAmmo)
         {
@@ -166,7 +166,7 @@ public class PlayerAgent : Agent
                 AddReward(-0.3f);
                 Debug.Log("불필요한 재장전 - 감점 부여");
             }
-        }
+        }*/
 
         // 재장전 로직
         if (isReloading)
@@ -177,7 +177,7 @@ public class PlayerAgent : Agent
                 currentAmmo = maxAmmo;
                 isReloading = false;
                 reloadTimer = 0f;
-                Debug.Log("일반 재장전 완료");
+                Debug.Log("재장전 완료");
             }
         }
 
@@ -228,7 +228,7 @@ public class PlayerAgent : Agent
         {
             Debug.Log("몬스터와 충돌 - 감점 부여");
             player.Hit(110);           //agent가 닿아도 감점만 되니 적극적인 회피를 하지않으므로 기존과 같이 몬스터와 닿을시 즉사판정으로 변경
-            AddReward(-1.0f);
+            AddReward(-10f);
             Destroy(other.gameObject); 
             if(player.HP <= 0f)
             {
