@@ -32142,6 +32142,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1350798931}
+  - component: {fileID: 1350798932}
   m_Layer: 5
   m_Name: '[[ObstacleSpawnController]]'
   m_TagString: Untagged
@@ -32172,6 +32173,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1350798932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350798930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63eeb9d7cb7716d4689c80e3e2267766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstaclePrefabs:
+  - {fileID: 4645471736505288774, guid: 1d6f6ca0b6a18b24a8a1b94790f87ca0, type: 3}
+  - {fileID: 7530096689983719724, guid: 6541286d75fc099459e6bff6b6ae80b2, type: 3}
+  - {fileID: 3607453904445224558, guid: ea167a9b747962249ba7c3a2c5091523, type: 3}
+  boxColls:
+  - {fileID: 1903786496}
+  - {fileID: 811804785}
+  - {fileID: 2006617242}
+  - {fileID: 1946855971}
+  parent: {fileID: 1994610731}
+  maxObstacles: 100
 --- !u!1 &1381442573
 GameObject:
   m_ObjectHideFlags: 0

@@ -41819,6 +41819,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63eeb9d7cb7716d4689c80e3e2267766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstaclePrefabs:
+  - {fileID: 4645471736505288774, guid: 1d6f6ca0b6a18b24a8a1b94790f87ca0, type: 3}
+  - {fileID: 7530096689983719724, guid: 6541286d75fc099459e6bff6b6ae80b2, type: 3}
+  - {fileID: 3607453904445224558, guid: ea167a9b747962249ba7c3a2c5091523, type: 3}
+  boxColls:
+  - {fileID: 1320868810}
+  - {fileID: 364024756}
+  parent: {fileID: 1538684957}
+  maxObstacles: 100
 --- !u!1 &1096863535
 GameObject:
   m_ObjectHideFlags: 0
